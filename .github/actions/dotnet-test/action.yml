@@ -1,0 +1,59 @@
+name: "Dotnet Test"
+description: "Test a .NET project with optional coverage."
+
+inputs:
+  project:
+    description: "The path to the .NET project or solution to test."
+    required: true
+    default: "./"
+  configuration:
+    description: "The build configuration (e.g., Debug or Release)."
+    required: false
+    default: "Debug"
+  coverage:
+    description: "Whether to collect code coverage (true/false)."
+    required: false
+    default: "false"
+  coverage-output:
+    description: "The directory where code coverage results will be saved (if coverage is enabled)."
+    required: false
+    default: "TestResults/"
+  continue-on-error:
+    description: "Continue workflow if tests fail"
+    required: false
+    default: "true"
+
+outputs:
+  test-result:
+    description: "The result of the test execution."
+    value: ${{ steps.run-tests.outputs.test-result }}
+  coverage-result:
+    description: "The result of the code coverage execution (if enabled)."
+    value: ${{ steps.run-tests.outputs.coverage-result }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Tests with coverage
+      if: ${{ inputs.coverage == 'true' }}
+      continue-on-error: ${{ inputs.continue-on-error }} 
+      run: dotnet test 
+          --collect:"XPlat Code Coverage;Format=opencover" 
+          --results-directory ${{ inputs.coverage-output }} 
+          --configuration ${{ inputs.configuration }}  
+      shell: bash
+    - name: Set Coverage Result Output
+      id: run-tests
+      if: ${{ inputs.coverage == 'true' }}
+      run: echo "coverage-result=$version" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Run Tests without coverage
+      if: ${{ inputs.coverage != 'true' }}
+      continue-on-error: ${{ inputs.continue-on-error }} 
+      run: dotnet test --configuration ${{ inputs.configuration }} 
+      shell: bash
+    - name: Set Test Result Output
+      id: run-tests
+      run: echo "test-result=Tests executed without coverage" >> "$GITHUB_OUTPUT"
+      shell: bash
