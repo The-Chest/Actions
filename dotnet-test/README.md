@@ -6,7 +6,7 @@ Runs `.NET` tests with optional code coverage collection.
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
-| `project` | Yes | `./` | Project or solution path to test. |
+| `project-path` | Yes | `./` | Project or solution path to test. |
 | `configuration` | No | `Debug` | Build configuration for `dotnet test`. |
 | `coverage` | No | `false` | Collect XPlat code coverage when `true`. |
 | `coverage-output` | No | `TestResults/` | Coverage results directory when enabled. |
