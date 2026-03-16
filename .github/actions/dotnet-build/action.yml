@@ -1,0 +1,55 @@
+name: Dotnet Build
+description: Build and test a .NET project.
+
+inputs:
+  dotnet-version:
+    description: 'The version of .NET to use (e.g., 6.0.x).'
+    required: true
+    default: '6.0.x'
+  create-build-artifact:
+    description: 'Whether to create a build artifact (true/false).'
+    required: false
+    default: 'false'
+  artifact-name:
+    description: 'The name of the build artifact (default: build-artifact).'
+    required: false
+    default: 'build-artifact'
+  artifact-folder:
+    description: 'The folder to include in the build artifact (default: bin/Release).'
+    required: false
+    default: 'bin/Release'
+  artifact-retention-days:
+    description: 'The number of days to retain the build artifact (default: 14).'
+    required: false
+    default: '14'
+
+outputs:
+  build-artifact:
+    description: The path to the build artifact.
+    value: ${{ steps.output-artifact.outputs.path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+    - name: Restore dependencies
+      run: dotnet restore
+      shell: bash
+    - name: Build project
+      run: dotnet build --no-restore --configuration Release
+      shell: bash
+    - name: Create build artifact
+      if: ${{ inputs.create-build-artifact == 'true' }}
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.artifact-folder }}
+        retention-days: ${{ inputs.artifact-retention-days }}
+    - name: Set artifact output
+      id: output-artifact
+      if: ${{ inputs.create-build-artifact == 'true' }}
+      run: echo "path=${{ inputs.artifact-folder }}" >> $GITHUB_OUTPUT
+      shell: bash
