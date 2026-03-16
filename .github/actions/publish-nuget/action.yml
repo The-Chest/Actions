@@ -1,0 +1,35 @@
+name: Publish NuGet Package
+description: Publish a .NET library to NuGet.org.
+
+inputs:
+  package-path:
+    description: 'The path to the .nupkg file to publish.'
+    required: true
+  package-name:
+    description: 'The name of the package to publish.'
+    required: true
+  package-version:
+    description: 'The version of the package to publish.'
+    required: true
+  nuget-api-key:
+    description: 'The API key for authenticating with GitHub Packages.'
+    required: true
+
+outputs:
+  package-artifact:
+    description: The path to the published package.
+    value: ${{ steps.publish-package.outputs.package-path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Pack library
+      run: dotnet pack ${{ inputs.package-path }} --configuration Release /p:Version=${{ inputs.package-version }} --no-build --output .
+      shell: bash
+    - name: Push library to Nuget
+      run: dotnet nuget push ${{ inputs.package-path }} --source https://api.nuget.org/v3/index.json --api-key "${{ inputs.nuget-api-key }}"
+      shell: bash
+    - name: Set package output
+      id: publish-package
+      run: echo "package-path=${{ inputs.package-path }}" >> $GITHUB_OUTPUT
+      shell: bash
