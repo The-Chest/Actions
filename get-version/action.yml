@@ -9,21 +9,20 @@ inputs:
 outputs:
   version:
     description: The version of the project.
-    value: ${{ steps.get-version.outputs.version }}
 
 runs:
   using: "composite"
   steps:
     - name: Get version from tag
-      id: get-version
+      id: get-version-from-tag
       if: ${{ inputs.version-source == 'tag' }}
       shell: bash
       run: |
         tag="${GITHUB_REF#refs/tags/}"
         version="${tag#v}"
-        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "version=$get-version-from-tag" >> "$GITHUB_OUTPUT"
     - name: Get version from branch
-      id: get-version
+      id: get-version-from-branch
       if: ${{ inputs.version-source == 'branch' }}
       shell: bash
       run: |
