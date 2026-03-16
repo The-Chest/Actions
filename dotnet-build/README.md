@@ -7,6 +7,7 @@ Builds a .NET project using `dotnet restore` and `dotnet build`, with optional a
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
 | `dotnet-version` | Yes | `6.0.x` | .NET SDK version passed to `actions/setup-dotnet`. |
+| `project-path` | Yes | `./` | Project or solution path to build. |
 | `create-build-artifact` | No | `false` | Upload a build artifact when set to `true`. |
 | `artifact-name` | No | `build-artifact` | Artifact name used by `actions/upload-artifact`. |
 | `artifact-folder` | No | `bin/Release` | Folder path uploaded as artifact content. |

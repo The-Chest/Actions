@@ -2,7 +2,7 @@ name: "Dotnet Test"
 description: "Test a .NET project with optional coverage."
 
 inputs:
-  project:
+  project-path:
     description: "The path to the .NET project or solution to test."
     required: true
     default: "./"
@@ -37,10 +37,10 @@ runs:
     - name: Run Tests with coverage
       if: ${{ inputs.coverage == 'true' }}
       continue-on-error: ${{ inputs.continue-on-error }} 
-      run: dotnet test 
-          --collect:"XPlat Code Coverage;Format=opencover" 
-          --results-directory ${{ inputs.coverage-output }} 
-          --configuration ${{ inputs.configuration }}  
+      run: dotnet test ${{ inputs.project-path }} |
+        --collect:"XPlat Code Coverage;Format=opencover" |
+        --results-directory ${{ inputs.coverage-output }} |
+        --configuration ${{ inputs.configuration }} 
       shell: bash
     - name: Set Coverage Result Output
       id: run-tests

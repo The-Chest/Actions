@@ -3,30 +3,25 @@ description: Get the version of the project from the tag or branch name.
 
 inputs:
   version-source:
-    description: 'The source to get the version from (tag or branch).'
+    description: The source to get the version from (tag or branch).
     required: false
-    default: 'tag'
+    default: tag
+
 outputs:
   version:
-    description: The version of the project.
+    description: The version of the project
     value: ${{ steps.get-version.outputs.version }}
 
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: Get version from tag
-      id: get-version
-      if: ${{ inputs.version-source == 'tag' }}
+    - id: get-version
       shell: bash
       run: |
-        tag="${GITHUB_REF#refs/tags/}"
-        version="${tag#v}"
-        echo "version=$version" >> "$GITHUB_OUTPUT"
-    - name: Get version from branch
-      id: get-version
-      if: ${{ inputs.version-source == 'branch' }}
-      shell: bash
-      run: |
-        branch="${GITHUB_REF#refs/heads/}"
-        version="${branch#release/v}"
+        if [[ "${{ inputs.version-source }}" == "tag" ]]; then
+          version="${GITHUB_REF_NAME#v}"
+        else
+          version="${GITHUB_REF_NAME#release/v}"
+        fi
+
         echo "version=$version" >> "$GITHUB_OUTPUT"

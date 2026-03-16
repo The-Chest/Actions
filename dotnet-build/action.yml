@@ -6,6 +6,10 @@ inputs:
     description: 'The version of .NET to use (e.g., 6.0.x).'
     required: true
     default: '6.0.x'
+  project-path:
+    description: "The path to the .NET project or solution to build."
+    required: true
+    default: "./"
   create-build-artifact:
     description: 'Whether to create a build artifact (true/false).'
     required: false
@@ -36,10 +40,10 @@ runs:
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ${{ inputs.project-path }}
       shell: bash
     - name: Build project
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build ${{ inputs.project-path }} --no-restore --configuration Release
       shell: bash
     - name: Create build artifact
       if: ${{ inputs.create-build-artifact == 'true' }}
