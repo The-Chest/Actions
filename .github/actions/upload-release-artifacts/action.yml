@@ -1,0 +1,32 @@
+name: Upload Release Artifacts
+description: Upload release artifacts to GitHub Releases.
+
+inputs:
+  github-token:
+    description: 'The GitHub token to authenticate with the GitHub API.'
+    required: true
+  path:
+    description: 'The path to the file to upload as a release artifact.'
+    required: true
+  name:
+    description: 'The name of the release artifact to upload.'
+    required: true
+  version:
+    description: 'The version of the release to which the artifacts should be uploaded (e.g., v1.0.0).'
+    required: true
+outputs:
+  artifact-url:
+    description: The URL of the uploaded release artifact.
+    value: ${{ steps.upload-artifacts.outputs.asset-url }}
+runs:
+  using: "composite"
+  steps:
+    - name: Upload release artifacts
+      id: upload-artifacts
+      uses: actions/upload-release-asset@v1
+      with:
+        repo-token: ${{ inputs.github-token }}
+        release-tag: ${{ inputs.version }}
+        asset-path: ${{ inputs.path }}
+        asset-name: ${{ inputs.name }}
+        asset-content-type: application/octet-stream
