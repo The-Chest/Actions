@@ -6,7 +6,6 @@ Builds a .NET project using `dotnet restore` and `dotnet build`, with optional a
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
-| `dotnet-version` | Yes | `6.0.x` | .NET SDK version passed to `actions/setup-dotnet`. |
 | `project-path` | Yes | `./` | Project or solution path to build. |
 | `create-build-artifact` | No | `false` | Upload a build artifact when set to `true`. |
 | `artifact-name` | No | `build-artifact` | Artifact name used by `actions/upload-artifact`. |
@@ -21,10 +20,9 @@ Builds a .NET project using `dotnet restore` and `dotnet build`, with optional a
 
 ## What this action does
 
-1. Sets up the requested .NET SDK.
-2. Runs `dotnet restore`.
-3. Runs `dotnet build --no-restore --configuration Release`.
-4. Optionally uploads the build output folder as an artifact.
+1. Runs `dotnet restore`.
+2. Runs `dotnet build --no-restore --configuration Release`.
+3. Optionally uploads the build output folder as an artifact.
 
 ## Example
 
@@ -32,9 +30,9 @@ Builds a .NET project using `dotnet restore` and `dotnet build`, with optional a
 - name: Build
   uses: ./dotnet-build
   with:
-    dotnet-version: 8.0.x
+    project-path: src/MyApp
+    artifact-folder: src/MyApp/bin/Release
     create-build-artifact: 'true'
     artifact-name: app-build
-    artifact-folder: src/MyApp/bin/Release
     artifact-retention-days: '7'
 ```
