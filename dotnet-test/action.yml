@@ -24,9 +24,6 @@ inputs:
     default: "true"
 
 outputs:
-  test-result:
-    description: "The result of the test execution."
-    value: ${{ steps.run-tests.outputs.test-result }}
   coverage-result:
     description: "The result of the code coverage execution (if enabled)."
     value: ${{ steps.run-tests.outputs.coverage-result }}
@@ -42,6 +39,7 @@ runs:
         --results-directory ${{ inputs.coverage-output }} |
         --configuration ${{ inputs.configuration }} 
       shell: bash
+
     - name: Set Coverage Result Output
       id: run-tests
       if: ${{ inputs.coverage == 'true' }}
@@ -52,8 +50,4 @@ runs:
       if: ${{ inputs.coverage != 'true' }}
       continue-on-error: ${{ inputs.continue-on-error }} 
       run: dotnet test --configuration ${{ inputs.configuration }} 
-      shell: bash
-    - name: Set Test Result Output
-      id: run-tests
-      run: echo "test-result=Tests executed without coverage" >> "$GITHUB_OUTPUT"
       shell: bash

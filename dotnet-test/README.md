@@ -16,7 +16,6 @@ Runs `.NET` tests with optional code coverage collection.
 
 | Name | Description |
 | --- | --- |
-| `test-result` | Status text output from the non-coverage flow. |
 | `coverage-result` | Status text output from the coverage flow. |
 
 ## What this action does
