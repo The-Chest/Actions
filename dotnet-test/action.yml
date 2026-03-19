@@ -4,8 +4,7 @@ description: "Test a .NET project with optional coverage."
 inputs:
   project-path:
     description: "The path to the .NET project or solution to test."
-    required: true
-    default: "./"
+    required: false
   configuration:
     description: "The build configuration (e.g., Debug or Release)."
     required: false
@@ -34,7 +33,7 @@ runs:
     - name: Run Tests with coverage
       if: ${{ inputs.coverage == 'true' }}
       continue-on-error: ${{ inputs.continue-on-error }} 
-      run: dotnet test ${{ inputs.project-path }} \
+      run: dotnet test ${{ inputs.project-path && inputs.project-path || '' }} \
         --collect:"XPlat Code Coverage;Format=opencover" \
         --results-directory ${{ inputs.coverage-output }} \
         --configuration ${{ inputs.configuration }} 
@@ -49,5 +48,6 @@ runs:
     - name: Run Tests without coverage
       if: ${{ inputs.coverage != 'true' }}
       continue-on-error: ${{ inputs.continue-on-error }} 
-      run: dotnet test --configuration ${{ inputs.configuration }} 
+      run: dotnet test ${{ inputs.project-path && inputs.project-path || '' }} \ 
+        --configuration ${{ inputs.configuration }} 
       shell: bash
