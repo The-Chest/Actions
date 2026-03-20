@@ -20,11 +20,10 @@ Uploads a file as a GitHub Release asset for a given release tag.
 ## What this action does
 
 Uses `actions/upload-release-asset@v1` with:
-- `repo-token`
-- `release-tag`
-- `asset-path`
-- `asset-name`
-- `asset-content-type: application/octet-stream`
+- `upload_url`
+- `asset_path`
+- `asset_name`
+- `asset_content_type: application/octet-stream`
 
 ## Example
 

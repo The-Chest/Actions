@@ -17,16 +17,42 @@ inputs:
 outputs:
   artifact-url:
     description: The URL of the uploaded release artifact.
-    value: ${{ steps.upload-artifacts.outputs.asset-url }}
+    value: ${{ steps.upload-artifacts.outputs.browser_download_url }}
+
 runs:
   using: "composite"
   steps:
+    - name: Get release
+      id: release
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const release = await github.rest.repos.getReleaseByTag({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag: "${{ inputs.version }}"
+          });
+
+          core.setOutput("release_id", release.data.id);
+    - name: Upload DLL
+      uses: actions/github-script@v7
+      with:
+        script: |
+          await github.rest.repos.uploadReleaseAsset({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: "${{ steps.release.outputs.release_id }}",
+            name: "${{ inputs.name }}",
+            data: require('fs').readFileSync(`${{ inputs.path }}/${{ inputs.name }}`)
+          });
     - name: Upload release artifacts
+      if: false
       id: upload-artifacts
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       with:
-        repo-token: ${{ inputs.github-token }}
-        release-tag: ${{ inputs.version }}
-        asset-path: ${{ inputs.path }}
-        asset-name: ${{ inputs.name }}
-        asset-content-type: application/octet-stream
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ${{ inputs.path }}
+        asset_name: ${{ inputs.name }}
+        asset_content_type: application/octet-stream        
