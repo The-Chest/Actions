@@ -34,5 +34,5 @@ Uses `actions/upload-release-asset@v1` with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     path: ./dist/my-app.zip
     name: my-app-v1.0.0.zip
-    version: v1.0.0
+    version: 1.0.0
 ```
