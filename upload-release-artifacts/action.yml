@@ -45,14 +45,3 @@ runs:
             name: "${{ inputs.name }}",
             data: require('fs').readFileSync(`${{ inputs.path }}/${{ inputs.name }}`)
           });
-    - name: Upload release artifacts
-      if: false
-      id: upload-artifacts
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ inputs.path }}
-        asset_name: ${{ inputs.name }}
-        asset_content_type: application/octet-stream        
