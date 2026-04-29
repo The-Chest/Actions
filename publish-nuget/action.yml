@@ -27,9 +27,9 @@ runs:
       run: dotnet pack ${{ inputs.package-path }} --configuration Release /p:Version=${{ inputs.package-version }} --no-build --output .
       shell: bash
     - name: Push library to Nuget
-      run: dotnet nuget push ${{ inputs.package-name }}.nupkg --source https://api.nuget.org/v3/index.json --api-key "${{ inputs.nuget-api-key }}"
+      run: dotnet nuget push ${{ inputs.package-name }}.${{ inputs.package-version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key "${{ inputs.nuget-api-key }}"
       shell: bash
     - name: Set package output
       id: publish-package
-      run: echo "package-path=${{ inputs.package-name }}.nupkg" >> $GITHUB_OUTPUT
+      run: echo "package-path=${{ inputs.package-name }}.${{ inputs.package-version }}.nupkg" >> $GITHUB_OUTPUT
       shell: bash
